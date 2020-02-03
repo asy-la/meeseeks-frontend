@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
-import Firebase from './Firebase';
+//import Firebase from './Firebase';
 
 import Field from './Field';
 import Button from './Button';
@@ -39,13 +39,13 @@ class ResetPassword extends React.Component {
 
     this.setState({loader: true});
 
-    Firebase.sendPasswordResetEmail(this.state.value)
+    /*Firebase.sendPasswordResetEmail(this.state.value)
     .then(function() {
       self.setState({success: true, loader: false});
     })
     .catch(function(error) {
       self.setState({error: error, loader: false});
-    })
+    })*/
   }
 
   loader() {

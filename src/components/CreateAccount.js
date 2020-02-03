@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
 
-import Firebase from './Firebase';
+import Meeseeks from './Meeseeks';
 import Field from './Field';
 import Button from './Button';
 import ErrorMsg from './ErrorMsg';
@@ -70,25 +70,7 @@ class CreateAccount extends React.Component {
       }      
 
       let self = this;
-      Firebase.createAccount(this.state.email, this.state.password)
-        .then(function() {
-          return Firebase.sendVerifyEmail();
-        })
-        .then(function() {
-          let user = Firebase.getUser();
-          let uid = user.uid;
-          let data = {
-            name: {
-              first: self.state.first,
-              last: self.state.last
-            }
-          }
-
-          return Firebase.createUserMetadata(uid, data)
-        })
-        .then(function(docRef) {
-          self.setState({created: true, loader: false});
-        })
+      Meeseeks.createUser(this.state.username, this.state.password, this.state.email)
         .catch(function(err) {
           self.setState({error: err, loader: false});
         });
@@ -130,10 +112,7 @@ class CreateAccount extends React.Component {
           <section id="create">
             <form id="form" onSubmit={this.handleSubmit}>
               <div>
-                <Input required={false} type="text" id="first" label="First Name" value={this.state.first} onChange={this.handleChange} />
-              </div>
-              <div>
-                <Input required={false} type="text" id="last" label="Last Name" value={this.state.last} onChange={this.handleChange} />
+                <Input required={true} type="text" id="username" label="Username" value={this.state.username} onChange={this.handleChange} />
               </div>
               <div>
                 <Input required={true} type="email" id="email" label="Email" value={this.state.email} onChange={this.handleChange} />

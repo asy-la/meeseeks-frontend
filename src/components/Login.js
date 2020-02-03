@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
 
 import Link from './Link';
-import Firebase from './Firebase';
+import Meeseeks from './Meeseeks';
 import Button from './Button';
 import Field from './Field';
 import ErrorMsg from './ErrorMsg';
@@ -34,21 +34,11 @@ class Login extends React.Component {
     this.handleFieldChange = this.handleFieldChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInvalid = this.handleInvalid.bind(this);
-    this.handleAuthStateChange = this.handleAuthStateChange.bind(this);
-    this.handleGoogleLoginButton = this.handleGoogleLoginButton.bind(this);
-
-    Firebase.addListener(this.handleAuthStateChange);
   }
 
   componentDidMount() {
-    let self = this;
-    Firebase.auth.onAuthStateChanged(function(user) {
-      self.setState({user: user, loader: false});
-    });
-  }
-
-  componentWillUnmount() {
-    Firebase.clearListener();
+    let user = Meeseeks.hasActiveSession();
+    this.setState({user: user, loader: false});
   }
 
   handleFieldChange(event) {
@@ -79,22 +69,13 @@ class Login extends React.Component {
     this.setState({loader: true});
 
     let self = this;
-    Firebase.emailAndPassword(this.state.username, this.state.password)
+    Meeseeks.login(this.state.username, this.state.password)
       .then(function(result) {
         return self.setState({user: result, error: null, loader: false});
       })
       .catch(function(error) {
         return self.setState({error: error, loader: false});
       });
-  }
-
-  handleAuthStateChange(event) {
-    this.setState({user: event, loader: false, error: null, password: ""});
-  }
-
-  handleGoogleLoginButton() {
-    this.setState({loader: true});
-    return Firebase.loginWithGoogle();
   }
 
   loader() {
@@ -131,8 +112,8 @@ class Login extends React.Component {
               <LoginField
                 required={true}
                 id="username" 
-                label="Email" 
-                type="email" 
+                label="Username or Email" 
+                type="text" 
                 onChange={this.handleFieldChange} 
                 value={this.state.username} />
             </div>
@@ -149,7 +130,7 @@ class Login extends React.Component {
           </form>
         </section>
         <section id="federated">
-          <LoginButton type="button" onClick={this.handleGoogleLoginButton}>Sign in with Google</LoginButton>
+          <LoginButton type="button">Log in with GitHub</LoginButton>
         </section>
         <section id="links">
           <div>

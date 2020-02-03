@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
 import {Redirect} from 'react-router-dom';
 
-import Firebase from './Firebase';
+//import Firebase from './Firebase';
 import Field from './Field';
 import Button from './Button';
 import ErrorMsg from './ErrorMsg';
@@ -74,7 +74,7 @@ class PasswordConfirmation extends React.Component {
     let err = this.validatePassword();
     if (err) return this.setState({error: err, loader: false});
 
-    let self = this;
+    /*let self = this;
     Firebase.confirmPasswordReset(this.props.code, this.state.password)
       .then(function() {
         self.setState({loader: false});
@@ -82,7 +82,7 @@ class PasswordConfirmation extends React.Component {
       })
       .catch(function(error) {
         self.setState({error: error, loader: false});
-      });
+      });*/
   }
 
   handleUser(evt) {
