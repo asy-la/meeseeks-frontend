@@ -92,7 +92,19 @@ Meeseeks.prototype.createUser = function(username, password, primaryEmail, secon
       }
       
       if (data.error) {
-        reject(error.message);
+        if (data.msg) {
+          reject(data.msg);
+        }
+        
+        reject(data.error);
+      }
+
+      if (data.access_token) {
+        cookies.set("access_token", data.access_token);
+      }
+
+      if (data.refresh_token) {
+        cookies.set("refresh_token", data.refresh_token);
       }
       
       resolve(data);
@@ -187,7 +199,7 @@ Meeseeks.prototype.login = function(username, password) {
         if (data.msg) {
           return reject(data.msg);
         }
-        
+
         return reject(data.error);
       }
 

@@ -70,10 +70,13 @@ class CreateAccount extends React.Component {
       }      
 
       let self = this;
-      Meeseeks.createUser(this.state.username, this.state.password, this.state.email)
-        .catch(function(err) {
-          self.setState({error: err, loader: false});
-        });
+      Meeseeks.createUser(this.state.username, this.state.password, this.state.email).then(function(result) {
+        console.log(result)
+        self.setState({created: true, loader:false});
+      })
+      .catch(function(err) {
+        self.setState({error: err.toString(), loader: false});
+      });
     }
 
     complete() {
@@ -102,7 +105,7 @@ class CreateAccount extends React.Component {
       let Err = null;
       if (this.state.error) {
         Err = (
-          <ErrorMsg>{this.state.error.message}</ErrorMsg>
+          <ErrorMsg>{this.state.error}</ErrorMsg>
         );
       }
 
