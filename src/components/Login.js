@@ -37,12 +37,21 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    let user = Meeseeks.hasActiveSession();
-    this.setState({user: user, loader: false});
+    this.setState({loader: true});
+
+    var self = this;
+
+    Meeseeks.hasActiveSession().then(function(result) {
+      self.setState({user: result, loader: false});
+    }).catch(function(error) {
+      self.setState({error: error, loader: false});
+    });
   }
 
   handleFieldChange(event) {
     event.target.setCustomValidity('');
+
+    this.setState({error:false});
 
     let newState = {};
     newState[event.target.id] = event.target.value
@@ -71,10 +80,12 @@ class Login extends React.Component {
     let self = this;
     Meeseeks.login(this.state.username, this.state.password)
       .then(function(result) {
+        console.log(result);
         return self.setState({user: result, error: null, loader: false});
       })
       .catch(function(error) {
-        return self.setState({error: error, loader: false});
+        console.log(error);
+        return self.setState({error: error.toString(), loader: false});
       });
   }
 
@@ -99,7 +110,7 @@ class Login extends React.Component {
 
     if (this.state.error) {
       errMsg = (
-        <ErrorMsg>{this.state.error.message}</ErrorMsg>
+        <ErrorMsg>{this.state.error}</ErrorMsg>
       );
     }
 
