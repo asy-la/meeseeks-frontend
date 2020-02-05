@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
-//import {Redirect} from 'react-router-dom';
+import queryString from 'query-string';
 
-//import Firebase from './Firebase';
-import Loader from './Loader';
+import Meeseeks from '../components/Meeseeks';
+import Loader from '../components/Loader';
+import ErrorMsg from '../components/ErrorMsg';
 
 class VerifyEmail extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     className: PropTypes.string,
-    code: PropTypes.string.isRequired
   }
 
   constructor(props) {
@@ -25,16 +25,21 @@ class VerifyEmail extends React.Component {
       loader: injectSheet(this.props.classes)(Loader)
     }
 
+    let values = queryString.parse(props.location.location.search);
     let self = this;
-    /*Firebase.verifyEmail(this.props.code)
-    .then(function() {
-      self.setState({verified: true, loader: false});
-      return self.render();
+
+    if (!values.code) {
+      this.setState({error: "invalid code"});
+    }
+
+    Meeseeks.verifyEmail(values.code).then(function(result) {
+      self.setState({loader: false, verified: true})
+    }).catch(function(err) {
+      let e = (
+        <ErrorMsg>{err}</ErrorMsg>
+        );
+      self.setState({error: e, loader: false});
     })
-    .catch(function(err) {
-      self.setState({error: err, loader: false});
-      return self.render();
-    });*/
   }
 
   complete() {
@@ -48,7 +53,7 @@ class VerifyEmail extends React.Component {
   error() {
     return(
       <div className={this.props.className}>
-        <div>Error! {this.state.error}</div>
+        {this.state.error}
       </div>
     );
   }

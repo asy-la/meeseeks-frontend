@@ -347,6 +347,43 @@ Meeseeks.prototype.submitPasswordReset = function(code, password) {
   });
 }
 
+Meeseeks.prototype.verifyEmail = function(code) {
+  let options = {
+    url: this.host  + "user/verify/" + code,
+    method: "GET",
+  };
+
+  return new Promise(function(resolve, reject) {
+    request(options, function(error, response, body) { 
+      if (error) {
+        reject(error);
+      }
+
+      if (body) {
+        let data = null;
+        
+        try{
+          data = JSON.parse(body)
+        } catch(e) {
+          reject(e);
+          return;
+        }
+
+        if (data.error) {
+
+          if (data.msg) {
+            return reject(data.msg);
+          }
+
+          return reject(data.error);
+        }
+      }
+
+      resolve();
+    });
+  });
+}
+
 Meeseeks.prototype.sendVerifyEmail = function(email) {
 
   let options = {
