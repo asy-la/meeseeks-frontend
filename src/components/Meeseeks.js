@@ -23,6 +23,7 @@ Meeseeks.prototype.getPublicKey = function() {
   return new Promise(function(resolve, reject){
 
     if (self.public_key) {
+      
       resolve(self.public_key);
     }
 
@@ -127,6 +128,9 @@ Meeseeks.prototype.validateToken = function(token) {
       claims = jwt.verify(token, self.public_key, { algorithms: ['RS256']});
     } catch (e) {
       console.log(e)
+      if (e.message === "jwt malformed") {
+        return Promise.resolve();
+      }
       return Promise.reject(e);
     }
 
@@ -138,7 +142,6 @@ Meeseeks.prototype.hasActiveSession = function() {
   let access = cookies.get("access_token");
 
   if (access) {
-    console.log("found access token", access);
     return this.validateToken(access)
   } else {
     return Promise.resolve();

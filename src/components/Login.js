@@ -8,6 +8,7 @@ import Button from './Button';
 import Field from './Field';
 import ErrorMsg from './ErrorMsg';
 import Loader from './Loader';
+import { ReactComponent as GHLogo } from './ghlogo.svg';
 
 class Login extends React.Component {
 
@@ -34,6 +35,7 @@ class Login extends React.Component {
     this.handleFieldChange = this.handleFieldChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInvalid = this.handleInvalid.bind(this);
+    this.github = this.github.bind(this);
   }
 
   componentDidMount() {
@@ -142,8 +144,11 @@ class Login extends React.Component {
             <LoginButton type="submit">Log in</LoginButton>
           </form>
         </section>
-        <section id="federated">
-          <LoginButton type="button">Log in with GitHub</LoginButton>
+        <section id="federated" style={{textAlign:"center"}}>
+          <LoginButton onClick={this.github}>
+            <GHLogo></GHLogo>
+            <span style={{marginLeft:'5px'}}>GitHub Log In</span>
+          </LoginButton>
         </section>
         <section id="links">
           <div>
@@ -160,6 +165,10 @@ class Login extends React.Component {
     const LoginButton = this.controls.button;
     const LoginLink = this.controls.link;
 
+    if (this.props.redirect) {
+      return window.location.assign(this.props.redirect);
+    }
+
     return(
       <div className={this.props.className}>
         <section id="content">
@@ -175,6 +184,11 @@ class Login extends React.Component {
         </section>
       </div>
     );
+  }
+
+  github() {
+    window.location.assign("http://localhost:8000/login/github/?redirect_uri=http%3A%2F%2Flocalhost:3000%2F");
+    return;
   }
 
   render() {

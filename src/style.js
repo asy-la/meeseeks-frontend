@@ -54,11 +54,17 @@ const style = {
     margin: "1em 0",
     float: "right",
     fontWeight: "bold",
-    background: "linear-gradient(to bottom,  #45484d 0%,#000000 100%)",
+    background: theme.color.black,
     color: theme.color.white,
     '&:hover': {
       color: theme.color.black,
-      background: theme.color.grey
+      background: theme.color.grey,
+      '& svg g': {
+        fill: theme.color.black,
+      }
+    },
+    '& svg g': {
+      fill: theme.color.white,
     }
   },
   field: {

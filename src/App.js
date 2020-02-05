@@ -16,8 +16,8 @@ function App(props) {
           <div className="content">
             <Paper className={props.jss.classes.paper}>
               <Switch>
-                <Route exact path="/" render={() => <Login jss={props.jss} />} />
-                <Route exact path="/login" render={() => <Login jss={props.jss} />} />
+                <Route exact path="/" render={(location) => <Login jss={props.jss} location={location} />} />
+                <Route exact path="/login" render={(location) => <Login jss={props.jss} location={location}/>} />
                 <Route exact path="/reset" render={(location) => <ResetPassword jss={props.jss} location={location} />} />
                 <Route exact path="/create" render={(location) => <CreateAccount jss={props.jss} location={location} />} />
                 <Route exact path="/verify" render={(location) => <VerifyEmail jss={props.jss} location={location} />} />

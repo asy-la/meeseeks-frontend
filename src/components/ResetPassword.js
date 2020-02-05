@@ -45,7 +45,7 @@ class ResetPassword extends React.Component {
       let e = (
         <ErrorMsg>{err}</ErrorMsg>
       );
-      self.setState({error: e});
+      self.setState({error: e, loader:false});
     })
   }
 
@@ -77,8 +77,8 @@ class ResetPassword extends React.Component {
 
     return (
       <div className={this.props.className}>
-        <span>Enter your email address to receive a link to reset your password.</span>
         <section id="error">{this.state.error}</section>
+        <div>Enter your email address to receive a link to reset your password.</div>
         <section id="passwordReset">
           <form id="form" onSubmit={this.handleSubmit}>
             <div>
