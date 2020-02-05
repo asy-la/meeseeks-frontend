@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
 //import {Redirect} from 'react-router-dom';
 
-import Firebase from './Firebase';
+//import Firebase from './Firebase';
 import Loader from './Loader';
 
 class VerifyEmail extends React.Component {
@@ -26,7 +26,7 @@ class VerifyEmail extends React.Component {
     }
 
     let self = this;
-    Firebase.verifyEmail(this.props.code)
+    /*Firebase.verifyEmail(this.props.code)
     .then(function() {
       self.setState({verified: true, loader: false});
       return self.render();
@@ -34,7 +34,7 @@ class VerifyEmail extends React.Component {
     .catch(function(err) {
       self.setState({error: err, loader: false});
       return self.render();
-    });
+    });*/
   }
 
   complete() {

@@ -1,31 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
+import queryString from 'query-string';
 
 import Reset from '../components/ResetPassword';
 import PasswordConfirm from '../components/PasswordConfirmation';
 import Link from '../components/Link';
-import Firebase from '../components/Firebase';
 
 function ResetPassword(props) {
 
-  let params = props.params
-
-  if (!params) {
-    try {
-      params = props.location.location.state.params;
-    } catch(e) {}
-  }
-
+  let values = queryString.parse(props.location.location.search);
   let content = (<Reset className={props.jss.classes.reset} classes={props.jss.rules.raw} />);
-  let user = Firebase.getUser();
 
-  if (user) {
-    content = (<PasswordConfirm classes={props.jss.rules.raw} user={user} />);
-  }
 
-  if (params) {
-    content = (<PasswordConfirm classes={props.jss.rules.raw} code={params.oobCode} />)
+  if (values.code) {
+    content = (<PasswordConfirm classes={props.jss.rules.raw} code={values.code} location={props.location} />)
   }
 
   const StyledLink = injectSheet(props.jss.rules.raw)(Link)
@@ -43,8 +32,7 @@ function ResetPassword(props) {
 }
 
 ResetPassword.propTypes = {
-  jss: PropTypes.object.isRequired,
-  params: PropTypes.object
+  jss: PropTypes.object.isRequired
 }
 
 export default ResetPassword

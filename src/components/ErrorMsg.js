@@ -18,16 +18,20 @@ const styles = {
       left: '0',
       right: 'inherit',
       transform: 'none',
+      width: "100%"
     },
     root: {
       zIndex: '0',
       position: 'inherit',
+      
     }
   },
   snackbarcontent: {
     root: {
       color: "white",
-      background: "#8c0e0e"
+      background: "#8c0e0e",
+      width: "100%",
+      marginBottom: "15px"
     }
   }
 };

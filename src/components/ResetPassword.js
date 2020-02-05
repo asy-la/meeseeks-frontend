@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
-//import Firebase from './Firebase';
+import Meeseeks from './Meeseeks';
 
 import Field from './Field';
 import Button from './Button';
@@ -39,13 +39,14 @@ class ResetPassword extends React.Component {
 
     this.setState({loader: true});
 
-    /*Firebase.sendPasswordResetEmail(this.state.value)
-    .then(function() {
-      self.setState({success: true, loader: false});
+    Meeseeks.sendPasswordResetEmail(this.state.value).then(function(result) {
+      self.setState({loader:false, success: true});
+    }).catch(function(err) {
+      let e = (
+        <ErrorMsg>{err}</ErrorMsg>
+      );
+      self.setState({error: e});
     })
-    .catch(function(error) {
-      self.setState({error: error, loader: false});
-    })*/
   }
 
   loader() {
@@ -58,7 +59,6 @@ class ResetPassword extends React.Component {
   }
 
   render() {
-    let errMsg = null;
     const Submit = this.controls.submit;
     const Email = this.controls.email;
 
@@ -75,16 +75,10 @@ class ResetPassword extends React.Component {
       );
     }
 
-    if (this.state.error) {
-      errMsg = (
-        <ErrorMsg>{this.state.error.message}</ErrorMsg>
-      );
-    }
-
     return (
       <div className={this.props.className}>
         <span>Enter your email address to receive a link to reset your password.</span>
-        <section id="error">{errMsg}</section>
+        <section id="error">{this.state.error}</section>
         <section id="passwordReset">
           <form id="form" onSubmit={this.handleSubmit}>
             <div>

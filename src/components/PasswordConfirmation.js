@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
-import {Redirect} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
-//import Firebase from './Firebase';
+import Meeseeks from './Meeseeks';
 import Field from './Field';
 import Button from './Button';
 import ErrorMsg from './ErrorMsg';
@@ -26,6 +26,7 @@ class PasswordConfirmation extends React.Component {
       confirm: "",
       error: null,
       loader: false,
+      success: false,
     }
 
     this.controls = {
@@ -36,8 +37,7 @@ class PasswordConfirmation extends React.Component {
     }
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleCode = this.handleCode.bind(this);
-    this.handleUser = this.handleUser.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(evt) {
@@ -48,59 +48,48 @@ class PasswordConfirmation extends React.Component {
 
   validatePassword() {
     if (this.state.password !== this.state.confirm) {
-      let e = {message: "Password values do not match."};
+      let e = "Password values do not match.";
       return e;
     }
 
     if (this.state.password.length < 8) {
-      let e = {message: "Passwords need to be at least 8 characters long."};
+      let e = "Passwords need to be at least 8 characters long.";
       return e;
     }
 
     let sc = !/[~`!#$%^&*+=\-[\]\\';,/{}|\\":<>?\d]/g.test(this.state.password);
 
     if (sc) {
-      let e = {message: "Passwords must contain at least one number or special character."};
+      let e = "Passwords must contain at least one number or special character.";
       return e;
     }
 
     return null;
   }
 
-  handleCode(evt) {
+  handleSubmit(evt) {
     evt.preventDefault();
     this.setState({loader: true});
 
     let err = this.validatePassword();
-    if (err) return this.setState({error: err, loader: false});
-
-    /*let self = this;
-    Firebase.confirmPasswordReset(this.props.code, this.state.password)
-      .then(function() {
-        self.setState({loader: false});
-        return (<Redirect to="/" />);
-      })
-      .catch(function(error) {
-        self.setState({error: error, loader: false});
-      });*/
-  }
-
-  handleUser(evt) {
-    evt.preventDefault();
-    this.setState({loader: true});
-
-    let err = this.validatePassword();
-    if (err) return this.setState({error: err, loader: false});
+    if (err) {
+      let error = (
+          <ErrorMsg>{err}</ErrorMsg>
+        );
+      return this.setState({error: error, loader: false});
+    }
 
     let self = this;
-    this.props.user.updatePassword(this.state.password)
-      .then(function() {
-        self.setState({loader: false});
-        return (<Redirect to="/" />);
-      })
-      .catch(function(error) {
-        self.setState({error: error, loader: false});
-      });
+    Meeseeks.submitPasswordReset(this.props.code, this.state.password).then(function(result) {
+
+      self.setState({loader: false, success: true});
+
+    }).catch(function(error) {
+      let err = (
+        <ErrorMsg>{error}</ErrorMsg>
+        );
+      self.setState({error: err, loader: false});
+    })
   }
 
   loader() {
@@ -115,31 +104,21 @@ class PasswordConfirmation extends React.Component {
   render() {
     const Password = this.controls.password;
     const Submit = this.controls.submit;
-    //const ErrMsg = this.controls.error;
+
+    if (this.state.success) {
+      return (<Redirect to="/" />);
+    }
 
     if (this.state.loader) {
       return this.loader();
     }
 
-    let Err = null;
-
-    if (this.state.error) {
-      Err = (
-        <ErrorMsg>{this.state.error.message}</ErrorMsg>
-      );
-    }
-
-    let submitHandler = this.handleSubmit;
-    if (this.props.user) {
-      submitHandler = this.handleUser;
-    }
-
     return (
       <div className={this.props.className}>
-        <span>Enter your new password. Passwords must be a minimum of 8 characters long, with at least one number or special character.</span>
-        <section id="error">{Err}</section>
+        <section id="error">{this.state.error}</section>
+        <div>Enter your new password. Passwords must be a minimum of 8 characters long, with at least one number or special character.</div>
         <section id="newPasswordForm">
-          <form id="form" onSubmit={submitHandler}>
+          <form id="form" onSubmit={this.handleSubmit}>
             <div>
               <Password required={true} type="password" id="password" label="New Password" value={this.state.password} onChange={this.handleChange} />
             </div>

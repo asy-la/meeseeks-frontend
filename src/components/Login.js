@@ -51,8 +51,6 @@ class Login extends React.Component {
   handleFieldChange(event) {
     event.target.setCustomValidity('');
 
-    this.setState({error:false});
-
     let newState = {};
     newState[event.target.id] = event.target.value
     this.setState(newState);
@@ -80,12 +78,13 @@ class Login extends React.Component {
     let self = this;
     Meeseeks.login(this.state.username, this.state.password)
       .then(function(result) {
-        console.log(result);
         return self.setState({user: result, error: null, loader: false});
       })
       .catch(function(error) {
-        console.log(error);
-        return self.setState({error: error.toString(), loader: false});
+        let err = (
+          <ErrorMsg>{error}</ErrorMsg>
+          );
+        return self.setState({error: err, loader: false});
       });
   }
 
@@ -96,6 +95,11 @@ class Login extends React.Component {
         <Loader classes={[this.props.classes.loader]}/>
       </div>
     );
+  }
+
+  logout() {
+    Meeseeks.logout();
+    this.setState({user: null})
   }
 
   login() {
@@ -109,9 +113,7 @@ class Login extends React.Component {
     }
 
     if (this.state.error) {
-      errMsg = (
-        <ErrorMsg>{this.state.error}</ErrorMsg>
-      );
+      errMsg = this.state.error;
     }
 
     return(
@@ -154,6 +156,7 @@ class Login extends React.Component {
   }
 
   success() {
+    let self = this;
     const LoginButton = this.controls.button;
     const LoginLink = this.controls.link;
 
@@ -162,7 +165,7 @@ class Login extends React.Component {
         <section id="content">
           <div>
             <h1>You are logged on.</h1>
-            <LoginButton onClick={function(){window.logout();}}>Logout</LoginButton>
+            <LoginButton onClick={function(){self.logout();}}>Logout</LoginButton>
           </div>
         </section>
         <section id="links">

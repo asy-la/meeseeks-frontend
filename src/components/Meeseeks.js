@@ -95,7 +95,7 @@ Meeseeks.prototype.createUser = function(username, password, primaryEmail, secon
         if (data.msg) {
           reject(data.msg);
         }
-        
+
         reject(data.error);
       }
 
@@ -173,8 +173,6 @@ Meeseeks.prototype.login = function(username, password) {
     })
   };
 
-  console.log(options);
-
   return new Promise(function(resolve, reject) {
     request(options, function(error, response, body) { 
       if (error) {
@@ -214,6 +212,11 @@ Meeseeks.prototype.login = function(username, password) {
       resolve(data);
     });
   });
+}
+
+Meeseeks.prototype.logout = function() {
+  cookies.remove("access_token");
+  cookies.remove("refresh_token");
 }
 
 Meeseeks.prototype.refreshToken = function(refresh_token) {
@@ -257,13 +260,100 @@ Meeseeks.prototype.refreshToken = function(refresh_token) {
   });
 }
 
+Meeseeks.prototype.sendPasswordResetEmail = function(email) {
+  let options = {
+    url: this.host  + "user/password/reset/" + encodeURIComponent(email),
+    method: "GET",
+    headers: {
+      'Authorization': 'Basic ' + btoa(this.client_id + ":" + this.client_secret),
+    }
+  };
+
+  return new Promise(function(resolve, reject) {
+    request(options, function(error, response, body) { 
+      if (error) {
+        reject(error);
+      }
+
+      if (body) {
+        let data = null;
+        
+        try{
+          data = JSON.parse(body)
+        } catch(e) {
+          reject(e);
+          return;
+        }
+
+        if (data.error) {
+
+          if (data.msg) {
+            return reject(data.msg);
+          }
+
+          return reject(data.error);
+        }
+      }
+
+      resolve();
+    });
+  });
+}
+
+Meeseeks.prototype.submitPasswordReset = function(code, password) {
+  let options = {
+    url: this.host  + "user/password/reset/",
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + btoa(this.client_id + ":" + this.client_secret)
+    },
+    body: JSON.stringify({
+      "code": code,
+      "password": password,
+    })
+  };
+
+  return new Promise(function(resolve, reject) {
+    request(options, function(error, response, body) { 
+      if (error) {
+        reject(error);
+      }
+
+      if (!body) {
+        reject("empty response body");
+      }
+
+      let data = null;
+      
+      try{
+        data = JSON.parse(body)
+      } catch(e) {
+        reject(e);
+        return;
+      }
+
+      if (data.error) {
+
+        if (data.msg) {
+          return reject(data.msg);
+        }
+
+        return reject(data.error);
+      }
+
+      resolve();
+    });
+  });
+}
+
 Meeseeks.prototype.sendVerifyEmail = function(email) {
 
   let options = {
     url: this.host  + "user/verify/",
     method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       "email": email
@@ -274,6 +364,26 @@ Meeseeks.prototype.sendVerifyEmail = function(email) {
     request(options, function(error, response, body) { 
       if (error) {
         reject(error);
+      }
+
+      if (body) {
+        let data = null;
+        
+        try{
+          data = JSON.parse(body)
+        } catch(e) {
+          reject(e);
+          return;
+        }
+
+        if (data.error) {
+
+          if (data.msg) {
+            return reject(data.msg);
+          }
+
+          return reject(data.error);
+        }
       }
 
       resolve();

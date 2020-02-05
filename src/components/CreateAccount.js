@@ -21,8 +21,7 @@ class CreateAccount extends React.Component {
         password: "",
         confirm: "",
         email: "",
-        first: "",
-        last: "",
+        username: "",
         error: null,
         loader: false,
         created: false
@@ -40,9 +39,11 @@ class CreateAccount extends React.Component {
     }
 
     handleChange(evt) {
-      let state = {};
-      state[evt.target.id] = evt.target.value;
-      this.setState(state);
+      if (evt.target) {
+        let state = {};
+        state[evt.target.id] = evt.target.value;
+        this.setState(state);
+      }
     }
 
     handleSubmit(evt) {
@@ -50,32 +51,43 @@ class CreateAccount extends React.Component {
       this.setState({loader: true});
 
       if (this.state.password !== this.state.confirm) {
-        let e = {message: "Password values do not match."};
-        this.setState({error: e, loader: false});
+        let e = "Password values do not match.";
+        let err = (
+        <ErrorMsg>{e}</ErrorMsg>
+        );
+        this.setState({error: err, loader: false});
         return;
       }
   
       if (this.state.password.length < 8) {
-        let e = {message: "Passwords need to be at least 8 characters long."};
-        this.setState({error: e, loader: false});
+        let e = "Passwords need to be at least 8 characters long.";
+        let err = (
+        <ErrorMsg>{e}</ErrorMsg>
+        );
+        this.setState({error: err, loader: false});
         return;
       }
   
       let sc = !/[~`!#$%^&*+=\-[\]\\';,/{}|\\":<>?\d]/g.test(this.state.password);
   
       if (sc) {
-        let e = {message: "Passwords must contain at least one number or special character."};
-        this.setState({error: e, loader: false});
+        let e = "Passwords must contain at least one number or special character.";
+        let err = (
+          <ErrorMsg>{e}</ErrorMsg>
+        );
+        this.setState({error: err, loader: false});
         return;
       }      
 
       let self = this;
       Meeseeks.createUser(this.state.username, this.state.password, this.state.email).then(function(result) {
-        console.log(result)
         self.setState({created: true, loader:false});
       })
-      .catch(function(err) {
-        self.setState({error: err.toString(), loader: false});
+      .catch(function(e) {
+        let err = (
+          <ErrorMsg>{e}</ErrorMsg>
+        );
+        self.setState({error: err, loader: false});
       });
     }
 
@@ -104,9 +116,7 @@ class CreateAccount extends React.Component {
 
       let Err = null;
       if (this.state.error) {
-        Err = (
-          <ErrorMsg>{this.state.error}</ErrorMsg>
-        );
+        Err = this.state.error
       }
 
       return(
