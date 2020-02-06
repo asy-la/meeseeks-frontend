@@ -36,7 +36,7 @@ Meeseeks.prototype.getPublicKey = function() {
 
     request.get({url: self.host + '.well-known/jwks.json'}, function(error, response, body) {
       if (error) {
-        return reject(error);
+        return reject(error.toString());
       }
       
       let data;
@@ -44,7 +44,7 @@ Meeseeks.prototype.getPublicKey = function() {
       try {
         data = JSON.parse(body);
       } catch(e) {
-        return reject(e);
+        return reject(e.toString());
       }
 
       if (data.public_key) {
@@ -83,7 +83,7 @@ Meeseeks.prototype.validateToken = function(token) {
 
   }).catch(function(e) {
 
-    Promise.reject(e);
+    Promise.reject(e.toString());
   });
 }
 
@@ -128,7 +128,7 @@ Meeseeks.prototype.createUser = function(username, password, primaryEmail, secon
       try{
         data = JSON.parse(body)
       } catch(e) {
-        return reject(e);
+        return reject(e.toString());
       }
       
       if (data.error) {
@@ -168,7 +168,7 @@ Meeseeks.prototype.hasActiveSession = function() {
         return Promise.resolve(result);
       }
     }).catch(function(err) {
-      return Promise.reject(err);
+      return Promise.reject(err.toString());
     })
   } else {
     return Promise.resolve();
@@ -222,7 +222,7 @@ Meeseeks.prototype.login = function(username, password) {
       try{
         data = JSON.parse(body)
       } catch(e) {
-        return reject(e);
+        return reject(e.toString());
       }
 
       if (data.error) {
@@ -277,7 +277,7 @@ Meeseeks.prototype.refreshToken = function(refresh_token) {
   return new Promise(function(resolve, reject) {
     request(options, function(error, response, body) { 
       if (error) {
-        return reject(error);
+        return reject(error.toString());
       }
 
       if (!body) {
@@ -289,7 +289,7 @@ Meeseeks.prototype.refreshToken = function(refresh_token) {
       try{
         data = JSON.parse(body)
       } catch(e) {
-        return reject(e);
+        return reject(e.toString());
       }
 
       if (data.error) {
@@ -328,7 +328,7 @@ Meeseeks.prototype.sendPasswordResetEmail = function(email) {
   return new Promise(function(resolve, reject) {
     request(options, function(error, response, body) { 
       if (error) {
-        return reject(error);
+        return reject(error.toString());
       }
 
       if (body) {
@@ -337,7 +337,7 @@ Meeseeks.prototype.sendPasswordResetEmail = function(email) {
         try{
           data = JSON.parse(body)
         } catch(e) {
-          return reject(e);
+          return reject(e.toString());
         }
 
         if (data.error) {
@@ -372,7 +372,7 @@ Meeseeks.prototype.submitPasswordReset = function(code, password) {
   return new Promise(function(resolve, reject) {
     request(options, function(error, response, body) { 
       if (error) {
-        return reject(error);
+        return reject(error.toString());
       }
 
       if (!body) {
@@ -384,7 +384,7 @@ Meeseeks.prototype.submitPasswordReset = function(code, password) {
       try{
         data = JSON.parse(body)
       } catch(e) {
-        return reject(e);
+        return reject(e.toString());
       }
 
       if (data.error) {
@@ -410,7 +410,7 @@ Meeseeks.prototype.verifyEmail = function(code) {
   return new Promise(function(resolve, reject) {
     request(options, function(error, response, body) { 
       if (error) {
-        return reject(error);
+        return reject(error.toString());
       }
 
       if (body) {
@@ -419,7 +419,7 @@ Meeseeks.prototype.verifyEmail = function(code) {
         try{
           data = JSON.parse(body)
         } catch(e) {
-          return reject(e);
+          return reject(e.toString());
         }
 
         if (data.error) {
@@ -453,7 +453,7 @@ Meeseeks.prototype.sendVerifyEmail = function(email) {
   return new Promise(function(resolve, reject) {
     request(options, function(error, response, body) { 
       if (error) {
-        return reject(error);
+        return reject(error.toString());
       }
 
       if (body) {
@@ -462,7 +462,7 @@ Meeseeks.prototype.sendVerifyEmail = function(email) {
         try{
           data = JSON.parse(body)
         } catch(e) {
-          return reject(e);
+          return reject(e.toString());
         }
 
         if (data.error) {
