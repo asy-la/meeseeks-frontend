@@ -97,6 +97,7 @@ Meeseeks.prototype.validateToken = function(token) {
 
 Meeseeks.prototype.createUser = function(username, password, primaryEmail, secondaryEmail) {
 
+  let self = this;
   let user = {
     username: username,
     password: password,
@@ -154,7 +155,9 @@ Meeseeks.prototype.createUser = function(username, password, primaryEmail, secon
         cookies.set("refresh_token", data.refresh_token);
       }
       
-      return resolve(data);
+      self.validateToken(data.access_token).then(function(result) {
+        return resolve(result);
+      });
     });
   });
 }
