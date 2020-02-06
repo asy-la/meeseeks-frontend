@@ -76,15 +76,7 @@ Meeseeks.prototype.validateToken = function(token) {
     try {
       claims = jwt.verify(token, self.public_key, { algorithms: ['RS256']});
     } catch (e) {
-      if (e.message === "jwt malformed") {
-        return Promise.resolve();
-      }
-
-      if (e.message === "jwt expired") {
-        return Promise.resolve();
-      }
-
-      return Promise.reject(e.toString());
+      return Promise.resolve();
     }
 
     return Promise.resolve(claims);
