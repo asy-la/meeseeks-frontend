@@ -43,7 +43,7 @@ function Login(props) {
   }
 
   return (
-    <Form classes={props.jss.rules.raw} className={props.jss.classes.loginform} />
+    <Form classes={props.jss} className={props.jss.classes.loginform} />
   );
 }
 

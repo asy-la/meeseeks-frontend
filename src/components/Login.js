@@ -23,10 +23,11 @@ class Login extends React.Component {
     };
 
     this.controls = {
-      button: injectSheet(this.props.classes)(Button),
-      field: injectSheet(this.props.classes)(Field),
-      loader: injectSheet(this.props.classes)(Loader),
-      link: injectSheet(this.props.classes)(Link)
+
+      button: injectSheet(this.props.classes.rules.raw)(Button),
+      field: injectSheet(this.props.classes.rules.raw)(Field),
+      loader: injectSheet(this.props.classes.rules.raw)(Loader),
+      link: injectSheet(this.props.classes.rules.raw)(Link)
     };
 
     let savedUsername = sessionStorage.getItem("username");
@@ -145,7 +146,7 @@ class Login extends React.Component {
           </form>
         </section>
         <section id="federated" style={{textAlign:"center"}}>
-          <LoginButton onClick={this.github}>
+          <LoginButton onClick={this.github} classes={this.props.classes.rules.raw.github} /*className={this.props.classes.classes.github}*/>
             <GHLogo></GHLogo>
             <span style={{marginLeft:'5px'}}>GitHub Log In</span>
           </LoginButton>

@@ -14,6 +14,7 @@ function App(props) {
       <div className="table">
         <div className="container">
           <div className="content">
+            <img src="img/Logo_TextOnly_Black.png" style={{width: 200, margin: '0 auto', marginBottom: '1em', display: 'inherit'}} />
             <Paper className={props.jss.classes.paper}>
               <Switch>
                 <Route exact path="/" render={(location) => <Login jss={props.jss} location={location} />} />

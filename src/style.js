@@ -1,9 +1,9 @@
 const theme = {
   color: {
     white: "white",
-    black: "black", 
-    grey: "#eaeaea",
-    green: "green"
+    asylaBlue: "#4BA9E0", 
+    grey: "#e0e0e0",
+    black: "#292929"
   }
 };
 
@@ -29,7 +29,7 @@ const style = {
   },
   app: {
     height: '100%',
-    background: theme.color.black,
+    background: theme.color.asylaBlue,
     '& .table': {
       display: 'table',
       height: '100%',
@@ -50,11 +50,16 @@ const style = {
       display: 'block'
     }
   },
+  github: {
+    //extend: 'button',
+    background: theme.color.black,
+    color: theme.color.white
+  },
   button: {
     margin: "1em 0",
     float: "right",
     fontWeight: "bold",
-    background: theme.color.black,
+    background: theme.color.asylaBlue,
     color: theme.color.white,
     '&:hover': {
       color: theme.color.black,
@@ -70,7 +75,7 @@ const style = {
   field: {
     width: "100%",
     margin: "15px 0",
-    color: theme.color.black
+    color: theme.color.asylaBlue
   },
   loginform: {
     display: 'inline-block',
@@ -82,7 +87,8 @@ const style = {
   },
   link: {
     marginTop: '1em',
-    fontSize: '13px'
+    fontSize: '13px',
+    color: theme.color.asylaBlue
   },
   paper: {
     padding: '3em 2em',

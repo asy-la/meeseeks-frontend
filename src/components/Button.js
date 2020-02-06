@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import injectSheet from 'react-jss';
 
-const styles = {
+/*const styles = {
   button: {}
-}
+}*/
 
 class Btn extends React.Component {
 
@@ -31,4 +31,4 @@ Btn.propTypes = {
   onClick: PropTypes.func
 };
 
-export default injectSheet(styles)(Btn);
+export default injectSheet()(Btn);
