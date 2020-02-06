@@ -47,7 +47,10 @@ class Login extends React.Component {
     Meeseeks.hasActiveSession().then(function(result) {
       self.setState({user: result, loader: false});
     }).catch(function(error) {
-      self.setState({error: error, loader: false});
+      let err = (
+        <ErrorMsg>{error}</ErrorMsg>
+        );
+      self.setState({error: err, loader: false});
     });
   }
 
@@ -87,6 +90,7 @@ class Login extends React.Component {
         let err = (
           <ErrorMsg>{error}</ErrorMsg>
           );
+
         return self.setState({error: err, loader: false});
       });
   }
@@ -174,7 +178,7 @@ class Login extends React.Component {
       <div className={this.props.className}>
         <section id="content">
           <div>
-            <h1>You are logged on.</h1>
+            <h1>You are logged on as {this.state.user.username}.</h1>
             <LoginButton onClick={function(){self.logout();}}>Logout</LoginButton>
           </div>
         </section>
