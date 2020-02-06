@@ -15,7 +15,7 @@ function App(props) {
         <div className="container">
           <div className="content">
             <Paper className={props.jss.classes.paper}>
-              <img src="img/Logo_TextOnly_Black.png" style={{width: 200, margin: '0 auto', marginBottom: '1em', display: 'inherit'}} />
+              <img alt="Asyla Logo" src="img/Logo_TextOnly_Black.png" style={{width: 200, margin: '0 auto', marginBottom: '1em', display: 'inherit'}} />
               <Switch>
                 <Route exact path="/" render={(location) => <Login jss={props.jss} location={location} />} />
                 <Route exact path="/login" render={(location) => <Login jss={props.jss} location={location}/>} />
