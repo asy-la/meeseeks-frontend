@@ -38,7 +38,7 @@ function Login(props) {
 
   if (redirectURI != null) {
     return (
-      <Form classes={props.jss.rules.raw} className={props.jss.classes.loginform} redirect={redirectURI}/>
+      <Form classes={props.jss} className={props.jss.classes.loginform} redirect={redirectURI}/>
     );
   }
 

@@ -45,12 +45,15 @@ class Login extends React.Component {
     var self = this;
 
     Meeseeks.hasActiveSession().then(function(result) {
+
       self.setState({user: result, loader: false});
+
     }).catch(function(error) {
+      
       let err = (
         <ErrorMsg>{error}</ErrorMsg>
         );
-      self.setState({error: err, loader: false});
+      self.setState({error: err, loader: false, user: null});
     });
   }
 
@@ -91,7 +94,7 @@ class Login extends React.Component {
           <ErrorMsg>{error}</ErrorMsg>
           );
 
-        return self.setState({error: err, loader: false});
+        return self.setState({error: err, loader: false, user: null});
       });
   }
 
@@ -171,6 +174,7 @@ class Login extends React.Component {
     const LoginLink = this.controls.link;
 
     if (this.props.redirect) {
+      sessionStorage.removeItem("redirectURI");
       return window.location.assign(this.props.redirect);
     }
 
