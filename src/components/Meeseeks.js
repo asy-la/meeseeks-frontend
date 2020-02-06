@@ -12,8 +12,6 @@ class Meeseeks {
     this.client_secret = clientSecret;
     this.host = "http://localhost:8000/";
     this.public_key = null;
-
-    this.getPublicKey();
   }
 }
 
@@ -22,15 +20,23 @@ Meeseeks.prototype.getPublicKey = function() {
 
   return new Promise(function(resolve, reject){
 
+    let cache = null;
+
+    if (localStorage) {
+      cache = localStorage.getItem("me_public_key");
+    }
+
+    if (!self.public_key && cache) {
+      self.public_key = cache;
+    }
+
     if (self.public_key) {
-      
-      resolve(self.public_key);
+      return resolve(self.public_key);
     }
 
     request.get({url: self.host + '.well-known/jwks.json'}, function(error, response, body) {
       if (error) {
-        reject(error);
-        return;
+        return reject(error);
       }
       
       let data;
@@ -38,13 +44,54 @@ Meeseeks.prototype.getPublicKey = function() {
       try {
         data = JSON.parse(body);
       } catch(e) {
-        reject(e);
-        return;
+        return reject(e);
       }
 
-      self.public_key = data.public_key;
-      resolve(data.public_key);
+      if (data.public_key) {
+        self.public_key = data.public_key;
+
+        if (localStorage) {
+          localStorage.setItem("me_public_key", self.public_key);
+        }
+
+        return resolve(data.public_key);
+      } else {
+        return reject("failed to fetch public key")
+      }
     });
+  });
+}
+
+Meeseeks.prototype.validateToken = function(token) {
+
+  let claims;
+  let self = this;
+
+  return this.getPublicKey().then(function() {
+
+    // TODO: get key id and validate the signature with the correct key, once key rotation is implemented
+    //let decoded = jwt.decode(token, {complete: true});
+    //let kid = decoded.payload.kid;
+
+    try {
+      claims = jwt.verify(token, self.public_key, { algorithms: ['RS256']});
+    } catch (e) {
+      if (e.message === "jwt malformed") {
+        return Promise.resolve();
+      }
+
+      if (e.message === "jwt expired") {
+        return Promise.resolve();
+      }
+
+      return Promise.reject(e.toString());
+    }
+
+    return Promise.resolve(claims);
+
+  }).catch(function(e) {
+
+    Promise.reject(e);
   });
 }
 
@@ -76,11 +123,11 @@ Meeseeks.prototype.createUser = function(username, password, primaryEmail, secon
     request(options, function(error, response, body) { 
 
       if (error) {
-        reject(error);
+        return reject(error);
       }
 
       if (!body) {
-        reject("empty response body");
+        return reject("empty response body");
       }
 
       let data = null;
@@ -88,16 +135,15 @@ Meeseeks.prototype.createUser = function(username, password, primaryEmail, secon
       try{
         data = JSON.parse(body)
       } catch(e) {
-        reject(e);
-        return;
+        return reject(e);
       }
       
       if (data.error) {
         if (data.msg) {
-          reject(data.msg);
+          return reject(data.msg);
         }
 
-        reject(data.error);
+        return reject(data.error);
       }
 
       if (data.access_token) {
@@ -108,41 +154,27 @@ Meeseeks.prototype.createUser = function(username, password, primaryEmail, secon
         cookies.set("refresh_token", data.refresh_token);
       }
       
-      resolve(data);
+      return resolve(data);
     });
-  });
-}
-
-Meeseeks.prototype.validateToken = function(token) {
-
-  let claims;
-  let self = this;
-
-  return this.getPublicKey().then(function() {
-
-    // TODO: get key id and validate the signature with the correct key, once key rotation is implemented
-    //let decoded = jwt.decode(token, {complete: true});
-    //let kid = decoded.payload.kid;
-
-    try {
-      claims = jwt.verify(token, self.public_key, { algorithms: ['RS256']});
-    } catch (e) {
-      console.log(e)
-      if (e.message === "jwt malformed") {
-        return Promise.resolve();
-      }
-      return Promise.reject(e);
-    }
-
-    return Promise.resolve(claims);
   });
 }
 
 Meeseeks.prototype.hasActiveSession = function() {
   let access = cookies.get("access_token");
+  let refresh = cookies.get("refresh_token");
+  let self = this;
 
   if (access) {
-    return this.validateToken(access)
+    return this.validateToken(access).then(function(result) {
+
+      if (!result && refresh) {
+        return self.refreshToken(refresh);
+      } else {
+        return Promise.resolve(result);
+      }
+    }).catch(function(err) {
+      return Promise.reject(err);
+    })
   } else {
     return Promise.resolve();
   }
@@ -154,7 +186,7 @@ Meeseeks.prototype.login = function(username, password) {
   let refresh = cookies.get("refresh_token");
 
   if (!username || !password) {
-    Promise.reject("missing username or password");
+    return Promise.reject("missing username or password");
   }
 
   if (session && refresh) {
@@ -179,11 +211,15 @@ Meeseeks.prototype.login = function(username, password) {
   return new Promise(function(resolve, reject) {
     request(options, function(error, response, body) { 
       if (error) {
-        reject(error);
+        if (error.message) {
+          return reject(error.message);
+        }
+
+        return reject(error.toString());
       }
 
       if (!body) {
-        reject("empty response body");
+        return reject("empty response body");
       }
 
       let data = null;
@@ -191,8 +227,7 @@ Meeseeks.prototype.login = function(username, password) {
       try{
         data = JSON.parse(body)
       } catch(e) {
-        reject(e);
-        return;
+        return reject(e);
       }
 
       if (data.error) {
@@ -212,18 +247,23 @@ Meeseeks.prototype.login = function(username, password) {
         cookies.set("refresh_token", data.refresh_token);
       }
       
-      resolve(data);
-    });
+      self.validateToken(data.access_token).then(function(result) {
+        return resolve(result);
+      });
+    })
   });
 }
 
 Meeseeks.prototype.logout = function() {
   cookies.remove("access_token");
   cookies.remove("refresh_token");
+  if (window) {
+    window.location.reload();
+  }
 }
 
 Meeseeks.prototype.refreshToken = function(refresh_token) {
-  console.log("sending refresh token request")
+
   let self = this;
   let options = {
     url: this.host  + "token",
@@ -242,11 +282,11 @@ Meeseeks.prototype.refreshToken = function(refresh_token) {
   return new Promise(function(resolve, reject) {
     request(options, function(error, response, body) { 
       if (error) {
-        reject(error);
+        return reject(error);
       }
 
       if (!body) {
-        reject("empty response body");
+        return reject("empty response body");
       }
       
       let data = null;
@@ -254,11 +294,29 @@ Meeseeks.prototype.refreshToken = function(refresh_token) {
       try{
         data = JSON.parse(body)
       } catch(e) {
-        reject(e);
-        return;
+        return reject(e);
+      }
+
+      if (data.error) {
+
+        if (data.msg) {
+          return reject(data.msg);
+        }
+
+        return reject(data.error);
+      }
+
+      if (data.access_token) {
+        cookies.set("access_token", data.access_token);
+      }
+
+      if (data.refresh_token) {
+        cookies.set("refresh_token", data.refresh_token);
       }
       
-      resolve(data);
+      self.validateToken(data.access_token).then(function(result) {
+        return resolve(result);
+      });
     });
   });
 }
@@ -275,7 +333,7 @@ Meeseeks.prototype.sendPasswordResetEmail = function(email) {
   return new Promise(function(resolve, reject) {
     request(options, function(error, response, body) { 
       if (error) {
-        reject(error);
+        return reject(error);
       }
 
       if (body) {
@@ -284,8 +342,7 @@ Meeseeks.prototype.sendPasswordResetEmail = function(email) {
         try{
           data = JSON.parse(body)
         } catch(e) {
-          reject(e);
-          return;
+          return reject(e);
         }
 
         if (data.error) {
@@ -298,7 +355,7 @@ Meeseeks.prototype.sendPasswordResetEmail = function(email) {
         }
       }
 
-      resolve();
+      return resolve();
     });
   });
 }
@@ -320,11 +377,11 @@ Meeseeks.prototype.submitPasswordReset = function(code, password) {
   return new Promise(function(resolve, reject) {
     request(options, function(error, response, body) { 
       if (error) {
-        reject(error);
+        return reject(error);
       }
 
       if (!body) {
-        reject("empty response body");
+        return reject("empty response body");
       }
 
       let data = null;
@@ -332,8 +389,7 @@ Meeseeks.prototype.submitPasswordReset = function(code, password) {
       try{
         data = JSON.parse(body)
       } catch(e) {
-        reject(e);
-        return;
+        return reject(e);
       }
 
       if (data.error) {
@@ -345,7 +401,7 @@ Meeseeks.prototype.submitPasswordReset = function(code, password) {
         return reject(data.error);
       }
 
-      resolve();
+      return resolve();
     });
   });
 }
@@ -359,7 +415,7 @@ Meeseeks.prototype.verifyEmail = function(code) {
   return new Promise(function(resolve, reject) {
     request(options, function(error, response, body) { 
       if (error) {
-        reject(error);
+        return reject(error);
       }
 
       if (body) {
@@ -368,8 +424,7 @@ Meeseeks.prototype.verifyEmail = function(code) {
         try{
           data = JSON.parse(body)
         } catch(e) {
-          reject(e);
-          return;
+          return reject(e);
         }
 
         if (data.error) {
@@ -382,7 +437,7 @@ Meeseeks.prototype.verifyEmail = function(code) {
         }
       }
 
-      resolve();
+      return resolve();
     });
   });
 }
@@ -403,7 +458,7 @@ Meeseeks.prototype.sendVerifyEmail = function(email) {
   return new Promise(function(resolve, reject) {
     request(options, function(error, response, body) { 
       if (error) {
-        reject(error);
+        return reject(error);
       }
 
       if (body) {
@@ -412,8 +467,7 @@ Meeseeks.prototype.sendVerifyEmail = function(email) {
         try{
           data = JSON.parse(body)
         } catch(e) {
-          reject(e);
-          return;
+          return reject(e);
         }
 
         if (data.error) {
@@ -426,7 +480,7 @@ Meeseeks.prototype.sendVerifyEmail = function(email) {
         }
       }
 
-      resolve();
+      return resolve();
     });
   });
 }
