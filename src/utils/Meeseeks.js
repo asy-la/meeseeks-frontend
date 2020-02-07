@@ -44,6 +44,7 @@ class Meeseeks {
     this.client_secret = "ODk4YzZmNDAtMmVmMS00NTA2LTgyZGUtOGZlMDhjMmY0YzczZThlYTgxNzEtMDYxYS00ZjVkLTk5YTctYjU3OGU0ZmQ0NjNi";
     this.host = "http://localhost:8000/";
     this.public_key = null;
+    this.token = null;
   }
 }
 
@@ -97,8 +98,6 @@ Meeseeks.prototype.validateToken = function(token) {
   return new Promise(function(resolve, reject) {
 
     let decoded = jwt.decode(token);
-    console.log(decoded)
-
     let kid = decoded.kid
 
     if (!kid) {
@@ -112,6 +111,7 @@ Meeseeks.prototype.validateToken = function(token) {
       //let kid = decoded.payload.kid;
 
       if (!self.public_key[kid]) {
+        self.token = null;
         reject("Error fetching public key")
       }
 
@@ -120,12 +120,15 @@ Meeseeks.prototype.validateToken = function(token) {
       try {
         claims = jwt.verify(token, pubkey, { algorithms: ['RS256']});
       } catch (e) {
+        self.token = null;
         return resolve();
       }
 
+      self.token = token;
       return resolve(claims);
 
     }).catch(function(err) {
+      self.token = null;
       reject(err);
     });
   });
