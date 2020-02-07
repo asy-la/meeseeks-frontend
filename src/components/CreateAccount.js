@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
 
-import Meeseeks from './Meeseeks';
+import Meeseeks from '../utils/Meeseeks';
 import Field from './Field';
 import Button from './Button';
 import ErrorMsg from './ErrorMsg';

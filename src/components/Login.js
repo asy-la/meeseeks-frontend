@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
 
 import Link from './Link';
-import Meeseeks from './Meeseeks';
+import Meeseeks from '../utils/Meeseeks';
 import Button from './Button';
 import Field from './Field';
 import ErrorMsg from './ErrorMsg';
 import Loader from './Loader';
-import { ReactComponent as GHLogo } from './ghlogo.svg';
+import { ReactComponent as GHLogo } from '../icons/ghlogo.svg';
 
 class Login extends React.Component {
 

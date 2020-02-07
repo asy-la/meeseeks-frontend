@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
 import queryString from 'query-string';
 
-import Meeseeks from '../components/Meeseeks';
+import Meeseeks from '../utils/Meeseeks';
 import Loader from '../components/Loader';
 import ErrorMsg from '../components/ErrorMsg';
 
