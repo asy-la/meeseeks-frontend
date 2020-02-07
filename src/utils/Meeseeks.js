@@ -2,6 +2,11 @@ var request = require('request');
 var jwt = require('jsonwebtoken');
 var cookies = require('js-cookie');
 
+/**
+ * Helper function for calling Asyla Oauth service and handling common errors
+ * @private
+ * @param {object} options - request options object
+ */
 function meeseeksRequest(options) {
   return new Promise(function(resolve, reject) {
     request(options, function(error, response, body) { 
@@ -25,12 +30,16 @@ function meeseeksRequest(options) {
       }
 
       if (data.error) {
+       
         console.error(data);
 
         if (data.msg) {
-          return reject(data.msg);
+          let u = data.msg.charAt(0).toUpperCase()
+          return reject(data.msg.replace(data.msg.charAt(0), u));
         }
-        return reject(data.error);
+
+        let u = data.msg.charAt(0).toUpperCase()
+        return reject(data.error.replace(data.msg.charAt(0), u));
       }
 
       return resolve(data);
@@ -38,18 +47,25 @@ function meeseeksRequest(options) {
   });
 }
 
+/**
+ * Meeseeks is a helper class for authenticating with the Asyla Oauth server. This module instantiates and exports a singleton
+ * of Meeseeks so it can be used across a project without concern. Every Meeseeks method returns a promise.
+ */
 class Meeseeks {
   constructor() {
     this.client_id = "5sXDKBw";
     this.client_secret = "ODk4YzZmNDAtMmVmMS00NTA2LTgyZGUtOGZlMDhjMmY0YzczZThlYTgxNzEtMDYxYS00ZjVkLTk5YTctYjU3OGU0ZmQ0NjNi";
     this.host = "http://localhost:8000/";
+    this.loginPage = "http://localhost:3000";
     this.public_key = null;
     this.token = null;
   }
 }
 
 /**
- * fetches the meeseeks auth service public key data for token validation
+ * Fetches the meeseeks auth service public key data for token validation
+ * @private
+ * @param {string} id - the public key id to fetch which is found in the token claims
  */
 Meeseeks.prototype.getPublicKey = function(id) {
   let self = this;
@@ -85,6 +101,7 @@ Meeseeks.prototype.getPublicKey = function(id) {
  * validates an asyla token and returns a promise. the promise resolves either an empty object if the token is 
  * no longer valid, or the token claims if the token is valid. in the event of an error fetching the public key
  * to validate the token then it will reject the promise.
+ * @param {string} - the access token string to validate
  */
 Meeseeks.prototype.validateToken = function(token) {
 
@@ -105,10 +122,6 @@ Meeseeks.prototype.validateToken = function(token) {
     }
   
     self.getPublicKey(kid).then(function() {
-
-      // TODO: get key id and validate the signature with the correct key, once key rotation is implemented
-      //let decoded = jwt.decode(token, {complete: true});
-      //let kid = decoded.payload.kid;
 
       if (!self.public_key[kid]) {
         self.token = null;
@@ -134,6 +147,14 @@ Meeseeks.prototype.validateToken = function(token) {
   });
 }
 
+/**
+ * Attempts to create a new Asyla user with the required information. A failed attempt due to a conflicting username
+ * or email address will result in a rejected promise.
+ * @param {string} username
+ * @param {string} password
+ * @param {string} primaryEmail
+ * @param {Array} secondaryEmail 
+ */
 Meeseeks.prototype.createUser = function(username, password, primaryEmail, secondaryEmail) {
 
   if (!username || !password || !primaryEmail) {
@@ -185,9 +206,9 @@ Meeseeks.prototype.createUser = function(username, password, primaryEmail, secon
 }
 
 /**
- * attempts to see if a user is active by checking the cookies for an access token and a refresh token. if an access token is found it will validate 
+ * Attempts to see if a user is active by checking the cookies for an access token and a refresh token. if an access token is found it will validate 
  * the token. if the access token is valid then the claims will be returned. if the access token is not valid then it will attempt to fetch a new one 
- * if a refresh token is available. if a refresh attempt is successful then the token claims will be returned  
+ * if a refresh token is available. if a refresh attempt is successful then the token claims will be returned.  
  */
 Meeseeks.prototype.hasActiveSession = function() {
   let access = cookies.get("access_token");
@@ -210,6 +231,12 @@ Meeseeks.prototype.hasActiveSession = function() {
   });
 }
 
+/**
+ * Does a password grant request to the Asyla Oauth service for user login. Requires the Asyla client secrets.
+ * Successful auth requests return the token claims, failure will result in a rejected promise.
+ * @param {string} username
+ * @param {string} password
+ */
 Meeseeks.prototype.login = function(username, password) {
   let self = this;
 
@@ -251,11 +278,14 @@ Meeseeks.prototype.login = function(username, password) {
   });
 }
 
+/**
+ * Logs a user out by clearing any access or refresh tokens from the user's cookie and then redirect to the login page
+ */
 Meeseeks.prototype.logout = function() {
   cookies.remove("access_token");
   cookies.remove("refresh_token");
   if (window) {
-    window.location.reload();
+    window.location = this.loginPage;
   }
 }
 
