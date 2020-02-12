@@ -9,7 +9,7 @@ import ErrorMsg from '../components/ErrorMsg';
 
 class VerifyEmail extends React.Component {
   static propTypes = {
-    classes: PropTypes.object.isRequired,
+    classes: PropTypes.object,
     className: PropTypes.string,
   }
 
