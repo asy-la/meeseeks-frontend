@@ -4,7 +4,7 @@ import injectSheet from 'react-jss';
 import queryString from 'query-string';
 
 import Reset from '../components/ResetPassword';
-import PasswordConfirm from '../components/PasswordConfirmation';
+import PasswordEntry from '../components/PasswordEntry';
 import Link from '../components/Link';
 
 function ResetPassword(props) {
@@ -14,7 +14,7 @@ function ResetPassword(props) {
 
 
   if (values.code) {
-    content = (<PasswordConfirm classes={props.jss.rules.raw} code={values.code} location={props.location} />)
+    content = (<PasswordEntry classes={props.jss.rules.raw} code={values.code} location={props.location} />)
   }
 
   const StyledLink = injectSheet(props.jss.rules.raw)(Link)

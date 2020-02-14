@@ -9,7 +9,7 @@ import Button from './Button';
 import ErrorMsg from './ErrorMsg';
 import Loader from './Loader';
 
-class PasswordConfirmation extends React.Component {
+class PasswordEntry extends React.Component {
 
   static propTypes = {
     classes: PropTypes.object.isRequired,
@@ -133,4 +133,4 @@ class PasswordConfirmation extends React.Component {
   }
 }
 
-export default PasswordConfirmation
+export default PasswordEntry
