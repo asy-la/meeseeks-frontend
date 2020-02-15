@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
-import Meeseeks from 'meeseeks';
+import Meeseeks from 'meeseeks-js';
 
 import Link from './Link';
 import Button from './Button';
@@ -27,7 +27,8 @@ class Login extends React.Component {
       button: injectSheet(this.props.classes.rules.raw)(Button),
       field: injectSheet(this.props.classes.rules.raw)(Field),
       loader: injectSheet(this.props.classes.rules.raw)(Loader),
-      link: injectSheet(this.props.classes.rules.raw)(Link)
+      link: injectSheet(this.props.classes.rules.raw)(Link),
+      ghlogin: injectSheet(this.props.classes.rules.raw)(Button),
     };
 
     let savedUsername = sessionStorage.getItem("username");
@@ -44,17 +45,22 @@ class Login extends React.Component {
 
     var self = this;
 
-    Meeseeks.hasActiveSession().then(function(result) {
-
-      self.setState({user: result, loader: false});
-
-    }).catch(function(error) {
-      
-      let err = (
-        <ErrorMsg>{error}</ErrorMsg>
-        );
-      self.setState({error: err, loader: false, user: null});
-    });
+    /*Meeseeks.hasActiveSession()
+      .then(function(result) {
+        if (result) {
+          return Meeseeks.getUserData()
+        }
+      })*/
+      Meeseeks.getUserData().then(function(result) {
+        return self.setState({user: result, error: null, loader: false});
+      })
+      .catch(function(error) {
+        
+        let err = (
+          <ErrorMsg>{error}</ErrorMsg>
+          );
+        self.setState({error: err, loader: false, user: null});
+      });
   }
 
   handleFieldChange(event) {
@@ -85,7 +91,10 @@ class Login extends React.Component {
     this.setState({loader: true});
 
     let self = this;
-    Meeseeks.login(this.state.username, this.state.password)
+    Meeseeks.authenticate(this.state.username, this.state.password)
+      .then(function(result) {
+        return Meeseeks.getUserData()
+      })
       .then(function(result) {
         return self.setState({user: result, error: null, loader: false});
       })
@@ -117,6 +126,7 @@ class Login extends React.Component {
     const LoginField = this.controls.field;
     const LoginButton = this.controls.button;
     const LoginLink = this.controls.link;
+    let GHLogin = this.controls.ghlogin;
 
     if (this.state.loader) {
       return this.loader();
@@ -125,6 +135,8 @@ class Login extends React.Component {
     if (this.state.error) {
       errMsg = this.state.error;
     }
+
+    console.log(this.props);
 
     return(
       <div className={this.props.className}>
@@ -149,14 +161,15 @@ class Login extends React.Component {
                 onChange={this.handleFieldChange}
                 value={this.state.password} />
             </div>
-            <LoginButton type="submit">Log in</LoginButton>
+            <LoginButton className="button" type="submit">Log in</LoginButton>
           </form>
         </section>
         <section id="federated" style={{textAlign:"center"}}>
-          <LoginButton onClick={this.github} classes={this.props.classes.rules.raw.github} /*className={this.props.classes.classes.github}*/>
+          <hr></hr>
+          <GHLogin onClick={this.github} className="github" /*className={this.props.classes.classes.github}*/>
             <GHLogo></GHLogo>
-            <span style={{marginLeft:'5px'}}>GitHub Log In</span>
-          </LoginButton>
+            <span style={{marginLeft:'5px'}}>GitHub</span>
+          </GHLogin>
         </section>
         <section id="links">
           <div>
@@ -183,7 +196,7 @@ class Login extends React.Component {
         <section id="content">
           <div>
             <h1>You are logged on as {this.state.user.username}.</h1>
-            <LoginButton onClick={function(){self.logout();}}>Logout</LoginButton>
+            <LoginButton className="button" onClick={function(){self.logout();}}>Logout</LoginButton>
           </div>
         </section>
         <section id="links">

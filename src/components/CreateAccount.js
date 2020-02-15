@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
-import Meeseeks from 'meeseeks';
+import Meeseeks from 'meeseeks-js';
 
 import Field from './Field';
 import Button from './Button';
@@ -136,7 +136,7 @@ class CreateAccount extends React.Component {
               <div>
                 <Input required={true} type="password" id="confirm" label="Confirm Password" value={this.state.confirm} onChange={this.handleChange} />
               </div>
-              <Submit type="submit">Create Account</Submit>            
+              <Submit className="button" type="submit">Create Account</Submit>            
             </form>
           </section>
         </div>

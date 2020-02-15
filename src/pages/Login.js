@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
-import Cookies from 'js-cookie';
 import { Redirect } from 'react-router-dom';
 
 import Form from '../components/Login';
@@ -25,8 +24,8 @@ function Login(props) {
   }
 
   if (values.token || values.refresh) {
-    Cookies.set("access_token", values.token);
-    Cookies.set("refresh_token", values.refresh);
+    sessionStorage.setItem("access_token", values.token);
+    sessionStorage.setItem("refresh_token", values.refresh);
 
     if (!redirectURI) {
       redirectURI = "/";

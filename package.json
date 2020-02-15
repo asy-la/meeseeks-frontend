@@ -7,7 +7,6 @@
     "@material-ui/icons": "^4.9.1",
     "jss": "^9.8.7",
     "jss-plugin-nested": "^10.0.4",
-    "meeseeks": "git+ssh://git@github.com/asy-la/meeseeks-js#master",
     "meeseeks-js": "git+ssh://git@github.com/asy-la/meeseeks-js.git#master",
     "query-string": "^6.11.0",
     "react": "^16.12.0",

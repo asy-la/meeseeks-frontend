@@ -12,6 +12,8 @@ const style = {
     "html, body": {
       position: 'relative',
       margin: 0,
+      overflow: 'hidden',
+      background: theme.color.asylaBlue,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
     },
     'html, body, #root': {
@@ -25,6 +27,10 @@ const style = {
     },
     '.switch-wrapper': {
       position: 'relative'
+    },
+    'hr': {
+      margin: '1.5em',
+      borderTop: '1px'
     }
   },
   app: {
@@ -51,15 +57,9 @@ const style = {
     }
   },
   github: {
-    //extend: 'button',
-    background: theme.color.black,
-    color: theme.color.white
-  },
-  button: {
-    margin: "1em 0",
-    float: "right",
+    margin: "1em auto",
     fontWeight: "bold",
-    background: theme.color.asylaBlue,
+    background: theme.color.black,
     color: theme.color.white,
     '&:hover': {
       color: theme.color.black,
@@ -72,6 +72,24 @@ const style = {
       fill: theme.color.white,
     }
   },
+  button: {
+    margin: "1em 0",
+    float: "right",
+    fontWeight: "bold",
+    color: theme.color.black,
+    background: theme.color.grey,
+    '&:hover': {
+      background: theme.color.asylaBlue,
+      color: theme.color.white,
+      '& svg g': {
+        fill: theme.color.black,
+      }
+    },
+    '& svg g': {
+      fill: theme.color.white,
+    }
+  },
+
   field: {
     width: "100%",
     margin: "15px 0",

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
 import { Redirect } from 'react-router-dom';
-import Meeseeks from 'meeseeks';
+import Meeseeks from 'meeseeks-js';
 
 import Field from './Field';
 import Button from './Button';

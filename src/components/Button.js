@@ -15,7 +15,7 @@ class Btn extends React.Component {
         type={this.props.type} 
         variant="contained" 
         classes={{
-          root: this.props.classes.button
+          root: this.props.classes[this.props.className]
         }}
         onClick={this.props.onClick}
       >
@@ -27,6 +27,7 @@ class Btn extends React.Component {
 
 Btn.propTypes = {
   classes: PropTypes.object.isRequired,
+  className: PropTypes.string,
   type: PropTypes.string,
   onClick: PropTypes.func
 };

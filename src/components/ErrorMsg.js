@@ -43,7 +43,6 @@ class ErrorMsg extends React.Component {
     let Icon = injectSheet(styles.icon)(ErrorIcon);
     let Wrapper = injectSheet(styles.snackbar)(Snackbar);
     let Content = injectSheet(styles.snackbarcontent)(SnackbarContent);
-
     return (
       <div>
         <Wrapper anchorOrigin={{vertical: 'top', horizontal: 'center'}} open={true}>

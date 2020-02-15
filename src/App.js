@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import ResetPassword from './pages/ResetPassword';
 import CreateAccount from './pages/CreateAccount';
 import VerifyEmail from "./pages/VerifyEmail";
+import ConfirmPassword from "./pages/ConfirmPassword";
 
 function App(props) {
 
@@ -22,6 +23,7 @@ function App(props) {
                 <Route exact path="/reset" render={(location) => <ResetPassword jss={props.jss} location={location} />} />
                 <Route exact path="/create" render={(location) => <CreateAccount jss={props.jss} location={location} />} />
                 <Route exact path="/verify" render={(location) => <VerifyEmail jss={props.jss} location={location} />} />
+                <Route exact path="/confirm" render={(location) => <ConfirmPassword classes={props.jss} location={location} />} />
               </Switch>
             </Paper>
           </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
-import Meeseeks from 'meeseeks';
+import Meeseeks from 'meeseeks-js';
 
 import Field from './Field';
 import Button from './Button';
@@ -84,7 +84,7 @@ class ResetPassword extends React.Component {
             <div>
               <Email type="email" id="email" label="Email" required={true} onChange={this.handleChange}/>
             </div>
-            <Submit type="submit">Send</Submit>
+            <Submit className="button" type="submit">Send</Submit>
           </form>
         </section>
       </div>
