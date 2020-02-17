@@ -45,22 +45,15 @@ class Login extends React.Component {
 
     var self = this;
 
-    /*Meeseeks.hasActiveSession()
-      .then(function(result) {
-        if (result) {
-          return Meeseeks.getUserData()
-        }
-      })*/
-      Meeseeks.getUserData().then(function(result) {
-        return self.setState({user: result, error: null, loader: false});
-      })
-      .catch(function(error) {
-        
-        let err = (
-          <ErrorMsg>{error}</ErrorMsg>
-          );
-        self.setState({error: err, loader: false, user: null});
-      });
+    Meeseeks.getUserData().then(function(result) {
+      return self.setState({user: result, error: null, loader: false});
+    })
+    .catch(function(error) {
+      let err = (
+        <ErrorMsg>{error}</ErrorMsg>
+        );
+      self.setState({error: err, loader: false, user: null});
+    });
   }
 
   handleFieldChange(event) {
