@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
-import Meeseeks from 'meeseeks-js';
+import Meeseeks from './Meeseeks';
 
 import Link from './Link';
 import Button from './Button';
@@ -50,7 +50,7 @@ class Login extends React.Component {
     })
     .catch(function(error) {
       let err = (
-        <ErrorMsg>{error}</ErrorMsg>
+        <ErrorMsg>{error.message}</ErrorMsg>
         );
       self.setState({error: err, loader: false, user: null});
     });
@@ -93,7 +93,7 @@ class Login extends React.Component {
       })
       .catch(function(error) {
         let err = (
-          <ErrorMsg>{error}</ErrorMsg>
+          <ErrorMsg>{error.message}</ErrorMsg>
           );
 
         return self.setState({error: err, loader: false, user: null});
@@ -128,8 +128,6 @@ class Login extends React.Component {
     if (this.state.error) {
       errMsg = this.state.error;
     }
-
-    console.log(this.props);
 
     return(
       <div className={this.props.className}>

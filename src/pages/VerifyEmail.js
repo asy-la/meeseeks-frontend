@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
 import queryString from 'query-string';
-import Meeseeks from 'meeseeks-js';
+import Meeseeks from '../components/Meeseeks';
 
 import Loader from '../components/Loader';
 import ErrorMsg from '../components/ErrorMsg';
@@ -36,7 +36,7 @@ class VerifyEmail extends React.Component {
       self.setState({loader: false, verified: true})
     }).catch(function(err) {
       let e = (
-        <ErrorMsg>{err}</ErrorMsg>
+        <ErrorMsg>{err.message}</ErrorMsg>
         );
       self.setState({error: e, loader: false});
     })

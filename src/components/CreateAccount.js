@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
-import Meeseeks from 'meeseeks-js';
+import Meeseeks from './Meeseeks';
 
 import Field from './Field';
 import Button from './Button';
@@ -85,7 +85,7 @@ class CreateAccount extends React.Component {
       })
       .catch(function(e) {
         let err = (
-          <ErrorMsg>{e}</ErrorMsg>
+          <ErrorMsg>{e.message}</ErrorMsg>
         );
         self.setState({error: err, loader: false});
       });

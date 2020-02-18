@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import injectSheet from 'react-jss';
 import { Redirect } from 'react-router-dom';
-import Meeseeks from 'meeseeks-js';
+import Meeseeks from './Meeseeks';
 
 import Field from './Field';
 import Button from './Button';
@@ -74,7 +74,7 @@ class PasswordEntry extends React.Component {
     let err = this.validatePassword();
     if (err) {
       let error = (
-          <ErrorMsg>{err}</ErrorMsg>
+          <ErrorMsg>{err.message}</ErrorMsg>
         );
       return this.setState({error: error, loader: false});
     }
@@ -86,7 +86,7 @@ class PasswordEntry extends React.Component {
 
     }).catch(function(error) {
       let err = (
-        <ErrorMsg>{error}</ErrorMsg>
+        <ErrorMsg>{error.message}</ErrorMsg>
         );
       self.setState({error: err, loader: false});
     })
