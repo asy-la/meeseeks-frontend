@@ -32,7 +32,7 @@ function Login(props) {
     }
     
     sessionStorage.removeItem("redirectURI");
-    window.location.assign(redirectURI);
+    return window.location.assign(redirectURI);
   }
 
   if (redirectURI != null) {
