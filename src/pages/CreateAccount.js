@@ -12,16 +12,18 @@ import { NavLink } from 'react-router-dom';
 
 import getLanguage from '../languages';
 
-export default function Login(props) {
+export default function CreateAccount(props) {
 
   const lang = getLanguage();
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
 
   let buttonvariant = "contained";
   let buttondisabled = false;
 
-  if (username === "" || password === "") {
+  if (username === "" || email === "" || password === "" || confirm === "") {
     buttonvariant = "contained";
     buttondisabled = true;
   }
@@ -34,7 +36,7 @@ export default function Login(props) {
     <Grow in={true}>
       <Container>
         <form onSubmit={handleSubmit} autoComplete="on">
-          <Grow in={true} timeout={{enter: 300}}>
+          <Grow in={true} timeout={{enter: 100}}>
             <Box width={1}>
               <TextField required 
                 variant={props.textvariant} 
@@ -44,7 +46,20 @@ export default function Login(props) {
                 autoFocus={true}
                 value={username} 
                 onChange={(e) => { setUsername(e.target.value) }} 
-                label={lang.strings.usernameOrEmailLbl} 
+                label={lang.strings.usernameLbl}
+              />
+            </Box>
+          </Grow>
+          <Grow in={true} timeout={{enter: 300}}>
+            <Box width={1}>
+              <TextField required 
+                variant={props.textvariant} 
+                type="email" 
+                id="email" 
+                fullWidth={true}
+                value={email} 
+                onChange={(e) => { setEmail(e.target.value) }} 
+                label={lang.strings.emailLbl} 
                 autoComplete="email"
               />
             </Box>
@@ -56,15 +71,27 @@ export default function Login(props) {
                 type="password" 
                 id="password" 
                 fullWidth={true}
-                value={password} 
+                value={email} 
                 onChange={(e) => { setPassword(e.target.value) }} 
                 label={lang.strings.passwordLbl} 
-                autoComplete="current-password"
+              />
+            </Box>
+          </Grow>
+          <Grow in={true} timeout={{enter: 700}}>
+            <Box width={1}>
+              <TextField required 
+                variant={props.textvariant} 
+                type="password" 
+                id="confirm" 
+                fullWidth={true}
+                value={email} 
+                onChange={(e) => { setConfirm(e.target.value) }} 
+                label={lang.strings.confirmPassLbl} 
               />
             </Box>
           </Grow>
           <Grid container direction="row-reverse">
-            <Grow in={true} timeout={{enter: 700}}>
+            <Grow in={true} timeout={{enter: 900}}>
               <Button 
                 aria-labelledby="submit-label" 
                 id="submit" 
@@ -80,13 +107,8 @@ export default function Login(props) {
           </Grid>
         </form>
         <Box className={props.classes.link}>
-          <Link component={NavLink} to="/reset">
-            {lang.strings.resetPassLink}
-          </Link>
-        </Box>
-        <Box>
-          <Link component={NavLink} to="/create">
-            {lang.strings.createAccountLink}
+          <Link component={NavLink} to="/">
+            {lang.strings.backText}
           </Link>
         </Box>
       </Container>

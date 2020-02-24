@@ -8,7 +8,7 @@ import ar from './ar';
 function getLanguage() {
   let lang = navigator.language;
 
-  //return {strings: fr, direction: "ltr"};
+  //return {strings: ar, direction: "rtl"};
 
   if (lang.search(/^en/im) > -1) {
     return {strings: en, direction: "ltr"};

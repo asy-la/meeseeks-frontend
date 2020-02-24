@@ -4,10 +4,11 @@ import App from './App';
 import { BrowserRouter } from "react-router-dom";
 
 import { StylesProvider, ThemeProvider, jssPreset } from "@material-ui/styles";
-import { createMuiTheme, createStyles, responsiveFontSizes } from '@material-ui/core/styles';
+import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
 import GlobalStyle from 'jss-plugin-global';
+import styles from './style';
 
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
@@ -28,21 +29,8 @@ function counter(state = 0, action) {
 const lang = getLanguage();
 const store = createStore(counter);
 
-const color = {
-  asylaBlue: "#4BA9E0",
-  dark: "#292929",
-  grey: "#c7c7c7",
-};
-
 const themeSettings = {
-  palette: {
-    primary: {
-      main: color.asylaBlue,
-    },
-    secondary: {
-      main: color.dark,
-    },
-  },
+  palette: styles.lightMode,
   spacing: 8,
   typography: {
     fontFamily: [
@@ -58,15 +46,6 @@ const themeSettings = {
       '"Segoe UI Symbol"',
     ].join(','),
   },
-  overrides: {
-    MuiButton: createStyles({
-      root: {
-        '&&:hover': {
-          backgroundColor: color.asylaBlue,
-        }
-      }
-    })
-  },
   direction: 'ltr'
 };
 
@@ -80,6 +59,8 @@ if (lang.direction === 'rtl') {
 
 let theme = createMuiTheme(themeSettings);
 theme = responsiveFontSizes(theme);
+
+console.log(theme);
 
 ReactDOM.render(
   <Provider store={store}>

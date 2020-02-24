@@ -1,29 +1,25 @@
 import React from 'react';
-//import { Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
+import Zoom from '@material-ui/core/Zoom';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Logo from './components/Logo';
 import Login from './pages/Login';
+import ResetPassword from './pages/ResetPassword';
+import CreateAccount from './pages/CreateAccount';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
     html: {
-      height: '100%',
-      width: '100%',
       overflow: 'hidden',
-      backgroundColor: theme.palette.primary.main,
     },
     body: {
-      height: '100%',
-      width: '100%',
       overflow: 'auto',
-      backgroundColor: theme.palette.primary.main,
     }
   },
   root: {
@@ -31,12 +27,14 @@ const useStyles = makeStyles(theme => ({
       marginTop: theme.spacing(2),
     },
     '& .MuiButton-root': {
-      float: 'right',
       marginTop: theme.spacing(2),
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(1),
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
+      '&:hover': {
+        backgroundColor: theme.palette.secondary.light,
+      }
     },
     '& .MuiTypography-button': {
       fontWeight: 700,
@@ -47,9 +45,7 @@ const useStyles = makeStyles(theme => ({
       paddingBottom: theme.spacing(5),
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
-      width: '100%',
-      minWidth: 300,
-      maxWidth: 450,
+      width: 450,
     },
     '& .MuiContainer-root': {
       padding: 0,
@@ -79,22 +75,26 @@ const useStyles = makeStyles(theme => ({
     '@media (min-width:1366px)': {
       '& .MuiPaper-root': { 
         transition: 'ease all .4s',
-        maxWidth: 600,
+        width: 600,
         paddingTop: theme.spacing(10),
         paddingBottom: theme.spacing(10),
-        paddingLeft: theme.spacing(2),
-        paddingRight: theme.spacing(2),
+        paddingLeft: theme.spacing(4),
+        paddingRight: theme.spacing(4),
       }
     }
   },
   logo: {
     maxHeight: 90,
     maxWidth: 300,
+    marginBottom: theme.spacing(2),
     '@media (max-width: 600px)': {
       maxHeight: 70,
       maxWidth: 200,
     }
-  }
+  },
+  link: {
+    marginTop: theme.spacing(4)
+  },
 }));
 
 export default function App() {
@@ -120,13 +120,26 @@ export default function App() {
           alignItems="center"
           justify="center"
           style={{ minHeight: '100vh' }} 
-          className={classes.root}>
-      <Paper variant={papervariant} elevation={5} square={papersquare}>
-        <Container>
-          <Logo name="Asyla" src="img/Logo_TextOnly_Black.png" className={classes.logo} />
-          <Login textvariant={textvariant} />
-        </Container>
-      </Paper>
+          className={classes.root}
+    >
+      <Zoom in={true}>
+        <Grid container justify="center">
+          <Paper variant={papervariant} elevation={5} square={papersquare}>
+            <Logo name="Asyla" src="img/Logo_TextOnly_Black.png" className={classes.logo} />
+            <Switch>
+              <Route exact path="/">
+                <Login textvariant={textvariant} classes={classes} />
+              </Route>
+              <Route exact path="/reset">
+                <ResetPassword textvariant={textvariant} classes={classes} />
+              </Route>
+              <Route exact path="/create">
+                <CreateAccount textvariant={textvariant} classes={classes} />
+              </Route>
+            </Switch>
+          </Paper>
+        </Grid>
+      </Zoom>
     </Grid>
   </React.Fragment>
   )
