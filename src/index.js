@@ -11,24 +11,15 @@ import GlobalStyle from 'jss-plugin-global';
 import styles from './style';
 
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { store, actions } from './redux/store';
 
 import getLanguage from './languages';
 
-function counter(state = 0, action) {
-  switch (action.type) {
-    case 'INCREMENT':
-      return state + 1
-    case 'DECREMENT':
-      return state - 1
-    default:
-      return state
-  }
-}
+console.log("actions", actions);
+
+//console.log("state", store.getState());
 
 const lang = getLanguage();
-const store = createStore(counter);
-
 const themeSettings = {
   palette: styles.lightMode,
   spacing: 8,
@@ -60,8 +51,8 @@ if (lang.direction === 'rtl') {
 let theme = createMuiTheme(themeSettings);
 theme = responsiveFontSizes(theme);
 
-console.log(theme);
-
+console.log("theme", theme);
+ 
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>

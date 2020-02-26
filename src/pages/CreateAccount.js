@@ -100,7 +100,7 @@ export default function CreateAccount(props) {
                 color="secondary"
               >
                 <Typography id="submit-label" variant="button" display="block">
-                  {lang.strings.loginText}
+                  {lang.strings.submitText}
                 </Typography>
               </Button>
             </Grow>
