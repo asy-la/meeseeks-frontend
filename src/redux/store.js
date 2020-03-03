@@ -75,6 +75,8 @@ function createUser(username, password, primary, secondary) {
         dispatch(sessionSlice.actions.setUser(result));
         dispatch(messageSlice.actions.success(text));
       });
+    }).catch((err) => {
+      dispatch(messageSlice.actions.failure(err.message));
     })
   }
 }
