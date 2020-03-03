@@ -11,6 +11,8 @@ import Grow from '@material-ui/core/Grow';
 import Link from '@material-ui/core/Link';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
+import IDP from '../components/IDP';
+
 import { store, actions } from '../redux/store';
 import { useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
@@ -127,6 +129,7 @@ export default function Login(props) {
             </Grow>
           </Grid>
         </form>
+        <IDP classes={props.classes} />
         <Grid container spacing={0} justify="space-between">
           <Grid container item xs={4} sm={6} classes={{root:props.classes.link}} justify="flex-start">
             <Box>

@@ -103,6 +103,23 @@ const useStyles = makeStyles(theme => ({
       paddingRight: theme.spacing(3),
     }
   },
+  github: {
+    background: theme.palette.common.black,
+    color: theme.palette.common.white,
+    '&:hover': {
+      color: theme.palette.common.black,
+      background: theme.palette.grey[350],
+      '& svg g': {
+        fill: theme.palette.common.black,
+      }
+    },
+    '& svg g': {
+      fill: theme.palette.common.white,
+    },
+    '& svg': {
+      marginRight: theme.spacing(1)
+    }
+  },
   buttonText: {
     fontWeight: 700,
   },

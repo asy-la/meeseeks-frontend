@@ -25,6 +25,14 @@ export default function ParamParser(props) {
       store.dispatch(actions.params.set({redirectURI: params.redirectURI}));
     }
 
+    if (params.token) {
+      sessionStorage.setItem("access_token", params.token);
+    }
+
+    if (params.refresh) {
+      sessionStorage.setItem("refresh_token", params.refresh);
+    }
+
     content = (
       <Redirect to={{pathname: props.location.pathname, search: ""}} />
     )
