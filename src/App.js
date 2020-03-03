@@ -22,6 +22,7 @@ import Logo from './components/Logo';
 import Login from './pages/Login';
 import ResetPassword from './pages/ResetPassword';
 import SubmitResetPassword from './pages/SubmitResetPassword';
+import Verify from './pages/Verify';
 import CreateAccount from './pages/CreateAccount';
 import Active from './pages/Active';
 
@@ -178,6 +179,9 @@ export default function App(props) {
         </Route>
         <Route exact path="/active">
           <Active classes={classes} />
+        </Route>
+        <Route exact path="/verify/:code">
+          <Verify classes={classes} />
         </Route>
         <Route exact path="/">
           <Login textvariant={textvariant} classes={classes} />

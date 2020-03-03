@@ -140,6 +140,16 @@ function submitPasswordReset(code, password) {
   }
 }
 
+function verifyEmail(code) {
+  return function(dispatch) {
+    return meeseeks.verifyEmail(code).then(() => {
+      dispatch(messageSlice.actions.success("Email address verified"));
+    }).catch((err) => {
+      dispatch(messageSlice.actions.failure(err.message));
+    });
+  }
+}
+
 export const actions = {
   session: sessionSlice.actions,
   language: languageSlice.actions,
@@ -152,6 +162,7 @@ export const actions = {
     logout: logout,
     sendPasswordReset: sendPasswordReset,
     submitPasswordReset: submitPasswordReset,
+    verifyEmail: verifyEmail,
   }
 };
 
