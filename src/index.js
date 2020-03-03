@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Switch } from "react-router-dom";
 
 import { StylesProvider, ThemeProvider, jssPreset } from "@material-ui/styles";
-import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
+import { createMuiTheme, createGenerateClassName, responsiveFontSizes } from '@material-ui/core/styles';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
 import GlobalStyle from 'jss-plugin-global';
@@ -16,10 +16,15 @@ import { store, actions } from './redux/store';
 import getLanguage from './languages';
 
 console.log("actions", actions);
-
-//console.log("state", store.getState());
+console.log("store", store);
 
 const lang = getLanguage();
+store.dispatch(actions.language.set(lang.strings));
+
+const generateClassName = createGenerateClassName({
+  productionPrefix: 'meeseeks',
+});
+
 const themeSettings = {
   palette: styles.lightMode,
   spacing: 8,
@@ -56,9 +61,11 @@ console.log("theme", theme);
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <StylesProvider jss={jss}>
+      <StylesProvider jss={jss} generateClassName={generateClassName}>
         <ThemeProvider theme={theme}>
-          <App />
+          <Switch>
+            <App />
+          </Switch>
         </ThemeProvider>
       </StylesProvider>
     </BrowserRouter>

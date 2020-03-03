@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect, NavLink } from 'react-router-dom';
+import { NavLink, useParams, Redirect } from 'react-router-dom';
 
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -13,25 +13,19 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 import { store, actions } from '../redux/store';
 import { useSelector } from 'react-redux';
-import { createSelector } from 'reselect';
 
-const getUserSelector = createSelector([state => state.session], (user) => {
-  return user;
-});
+export default function SubmitResetPassword(props) {
 
-export default function CreateAccount(props) {
-
-  const lang = useSelector(state => state.language)
-  const user = useSelector(state => getUserSelector(state))
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+  const lang = useSelector(state => state.language);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loader, setLoader] = useState(false);
   const [buttondisabled, setButtondisabled] = useState(true);
   const [fielddisabled, setFielddisabled] = useState(false);
-  const [active, setActive] = useState(false);
+  const [done, setDone] = useState(false);
   const passwordRe = /[~`!#$%^&*+=\-[\]\\';,/{}|\\":<>?\d]/g;
+
+  let { code } = useParams();
 
   let loaderContent;
   if (loader) {
@@ -41,16 +35,10 @@ export default function CreateAccount(props) {
   }
 
   useEffect(() => {
-    if (username !== "" && email !== "" && password !== "" && confirm !== "") {
+    if (password !== "" && confirm !== "" && password === confirm) {
       setButtondisabled(false);
     }
-  }, [username, email, password, confirm])
-
-  useEffect(() => {
-    if (user && Object.keys(user).length > 0) {
-      setActive(true);
-    }
-  }, [user]);
+  }, [password, confirm])
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -69,58 +57,26 @@ export default function CreateAccount(props) {
     setButtondisabled(true);
     setFielddisabled(true);
 
-    store.dispatch(actions.meeseeks.createUser(username, password, email)).then(() => {
+    store.dispatch(actions.meeseeks.submitPasswordReset(code, password)).then((result) => {
+
+      console.log(result);
       setButtondisabled(false);
       setFielddisabled(false);
       setLoader(false);
+      setDone(result);
     });
   }
 
-  if (active && !loader) {
+  if (done) {
     return (
       <Redirect to="/active" />
     )
   }
 
-  return(
+  return (
     <Grow in={true}>
       <Container classes={{root: props.classes.container}}>
-      <Typography variant="body1" paragraph={true} align="center">
-          {lang.createAccountDescription}
-        </Typography>
         <form onSubmit={handleSubmit} autoComplete="on">
-          <Grow in={true} timeout={{enter: 100}}>
-            <Box width={1}>
-              <TextField required 
-                variant={props.textvariant} 
-                type="text" 
-                id="username" 
-                fullWidth={true} 
-                autoFocus={true}
-                value={username} 
-                disabled={fielddisabled}
-                onChange={(e) => { setUsername(e.target.value) }} 
-                label={lang.usernameLbl}
-                classes={{root:props.classes.inputField}}
-              />
-            </Box>
-          </Grow>
-          <Grow in={true} timeout={{enter: 300}}>
-            <Box width={1}>
-              <TextField required 
-                variant={props.textvariant} 
-                type="email" 
-                id="email" 
-                fullWidth={true}
-                value={email}
-                disabled={fielddisabled}
-                onChange={(e) => { setEmail(e.target.value) }} 
-                label={lang.emailLbl} 
-                autoComplete="email"
-                classes={{root:props.classes.inputField}}
-              />
-            </Box>
-          </Grow>
           <Grow in={true} timeout={{enter: 500}}>
             <Box width={1}>
               <TextField required 
@@ -156,10 +112,10 @@ export default function CreateAccount(props) {
             <Grow in={true} timeout={{enter: 900}}>
               <Button 
                 aria-labelledby="submit-label" 
-                id="submit" 
-                disabled={buttondisabled} 
+                id="submit"
                 variant="contained"
                 color="secondary"
+                disabled={buttondisabled}
                 classes={{root:props.classes.button}}
                 type="submit"
               >
@@ -177,5 +133,5 @@ export default function CreateAccount(props) {
         </Box>
       </Container>
     </Grow>
-  );
+  )
 }
